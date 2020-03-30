@@ -1,0 +1,109 @@
+iwlist wlan0 scan  쳤을 때 나오는 내용
+
+
+Cell 01 - Address: C0:7B:BC:5B:9F:E1
+                    Channel:6
+                    Encryption key:on
+                    ESSID:"nsg"
+                    Mode:Master
+                    IE: IEEE 802.11i/WPA2 Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (1) : CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+                    IE: WPA Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (2) : TKIP CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+IEEE 802.11i
+IEEE 802.1x
+
+
+Cell 09 - Address: C0:7B:BC:CE:CF:A1
+                    Channel:11
+                    Encryption key:on
+                    ESSID:"nsg"
+                    Mode:Master
+                    IE: IEEE 802.11i/WPA2 Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (1) : CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+                    
+                    IE: WPA Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (2) : TKIP CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+
+
+============================================================
+
+Cell 01 - Address: C0:7B:BC:5B:9F:E1
+                    Channel:6
+                    Frequency:2.437 GHz (Channel 6)
+                    Quality=63/70  Signal level=-47 dBm  
+                    Encryption key:on
+                    ESSID:"nsg"
+                    Bit Rates:6 Mb/s; 12 Mb/s; 18 Mb/s; 24 Mb/s; 36 Mb/s
+                              48 Mb/s; 54 Mb/s
+                    Mode:Master
+                    Extra:tsf=0000000000000000
+                    Extra: Last beacon: 90ms ago
+                    IE: Unknown: 00036E7367
+                    IE: Unknown: 01078C9824B048606C
+                    IE: Unknown: 030106
+                    IE: Unknown: 07064B5220010D14
+                    IE: Unknown: 0B050100778D5B
+                    IE: Unknown: 2A0100
+                    IE: Unknown: 2D1AAC191BFFFFFF0000000000000000000000000000000000000000
+                    IE: IEEE 802.11i/WPA2 Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (1) : CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+                    IE: Unknown: 3D1606000500000000000000000000000000000000000000
+                    IE: Unknown: 7F06001000000040
+                    IE: Unknown: 851E0A008F000F00FF03590044595F41505F3132465F34000000000001000040
+                    IE: Unknown: 9606004096001000
+                    IE: WPA Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (2) : TKIP CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+                    IE: Unknown: DD180050F2020101800003A4000027A4000042435E0062322F00
+                    IE: Unknown: DD06004096010104
+                    IE: Unknown: DD050040960305
+                    IE: Unknown: DD050040960B09
+                    IE: Unknown: DD050040961401
+
+Cell 09 - Address: C0:7B:BC:CE:CF:A1
+                    Channel:11
+                    Frequency:2.462 GHz (Channel 11)
+                    Quality=53/70  Signal level=-57 dBm  
+                    Encryption key:on
+                    ESSID:"nsg"
+                    Bit Rates:6 Mb/s; 12 Mb/s; 18 Mb/s; 24 Mb/s; 36 Mb/s
+                              48 Mb/s; 54 Mb/s
+                    Mode:Master
+                    Extra:tsf=0000000000000000
+                    Extra: Last beacon: 90ms ago
+                    IE: Unknown: 00036E7367
+                    IE: Unknown: 01078C9824B048606C
+                    IE: Unknown: 03010B
+                    IE: Unknown: 07064B5220010D14
+                    IE: Unknown: 0B050100568D5B
+                    IE: Unknown: 2A0100
+                    IE: Unknown: 2D1AAC191BFFFFFF0000000000000000000000000000000000000000
+                    IE: IEEE 802.11i/WPA2 Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (1) : CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+                    IE: Unknown: 3D160B000500000000000000000000000000000000000000
+                    IE: Unknown: 7F06001000000040
+                    IE: Unknown: 851E09008F000F00FF03590044595F41505F3132465F43000000000001000040
+                    IE: Unknown: 9606004096001000
+                    IE: WPA Version 1
+                        Group Cipher : TKIP
+                        Pairwise Ciphers (2) : TKIP CCMP
+                        Authentication Suites (2) : 802.1x Proprietary
+                    IE: Unknown: DD180050F2020101800003A4000027A4000042435E0062322F00
+                    IE: Unknown: DD06004096010104
+                    IE: Unknown: DD050040960305
+                    IE: Unknown: DD050040960B09
+                    IE: Unknown: DD050040961401

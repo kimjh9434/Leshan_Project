@@ -1,0 +1,206 @@
+기본적으로 윈10 환경에서의 네트워크 연결 설정과, 라즈베리파이에서의 네트워크 연결 설정은
+GUI자체가 다르므로 방식이 다르다.
+
+
+윈10 : 무선 네트워크에 수동으로 연결 
+네트워크 이름 : nsg
+보안종류 : WPA2-엔터프라이즈
+암호화유영 : AES
+네트워크에서 브로드캐스팅하지 않는 경우에도 연결
+
+네트워크 인증방법 : PEAP(Protected Extensible Authentication Protocol)
+=> 서버 인증서 유효성 확인 X
+
+802.1X 설정
+인증 모드 지정 : 사용자 또는 컴퓨터 인증
+
+이후 네크워크 와이파이에서 nsg에 직접 사용자 이름과 암호를 입력하면 된다고 한다.
+=======================================================================
+
+ESSID:"nsg"
+
+
+-- 네트워크 재연결 방법 3가지
+1. sudo service networking restart
+2. sudo ifconfig wlan0 down   /   sudo ifconfig wlan0 up 
+3. sudo reboot
+
+
+-- 보아하니 결국, /etc/wpa_supplicant/wpa_supplicant.conf
+와 /etc/network/interfaces를 각각 수정해야 하는 것 같은데...
+정확한 양식이 어떻게 되는지 모르겠다. [계속 에러가 떠서...]
+
+
+
+// 오류 : No wireless iterfaces found
+- 뭔지는 잘 몰라도, /etc/wpa_supplicant/wpa_supplicant.conf와 /etc/network/interfaces 가 잘못되면,
+해당 파일을 읽다가 못 읽고 저련 오류가 뜬다.
+
+// 오류 : "Job for networking.service failed because the control process exited with error code.
+See "systemctl status networking.service" and "journalctl -xe" for details."
+- 역시 마찬가지이다.
+
+뭔가 잘못된 값이면 못읽고 저런 에러가 난다.
+
+
+=======================================================================
+
+[RPi] WPA2-Enterprise 연결하기 
+https://blog.iolate.kr/201
+
+=> 안된다. /etc/network/interfaces 설정에 문제가 있는 것 같다.
+
+=======================================================================
+
+018. Raspberry Pi 라즈베리 파이 - 학교 WiFi 사용 설정 (WPA-EAP, PEAP)
+https://zelkun.tistory.com/entry/018-Raspberry-Pi-%EB%9D%BC%EC%A6%88%EB%B2%A0%EB%A6%AC-%ED%8C%8C%EC%9D%B4-%ED%95%99%EA%B5%90-WiFi-%EC%82%AC%EC%9A%A9-%EC%84%A4%EC%A0%95-WPA-EAP-PEAP
+
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+를 통해 내용을
+network={
+	ssid="nsg"
+	key_mgmt=WPA-EAP
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+}
+
+로 바꾸면 안된다.
+
+
+=======================================================================
+
+라즈베리파이B+에서 WPA2Enterprise에 연결하기
+https://blog.naver.com/remocon33/221120991315
+
+여기는 iwconfig를 입력할 때, wlan0, lo, eth0 말고도 다른게 더 뜬다.
+본인 말로는 장착한 무선랜카드의 이더넷, 장착한 무선 랜카드의 무선랜을 의미하며,
+장착한 무선 랜카드의 무선랜 인터페이스를 사용한다고 해서, 일단 다를 수가 있다.
+나는 여기서 wlan0만 바꿔서 적용해볼 것이다.
+
+sudo nano /etc/network/interfaces
+
+"
+auto lo
+iface lo inet loopback
+
+iface eth0 inet manual
+audo wlan0
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+" 내용을 추가했다.
+
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+"
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev 
+
+update_config=1 
+
+country=US 
+
+network={ 
+        ssid="nsg"
+        scan_ssid=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        pairwise=CCMP
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+}
+" 내용 추가
+
+===> 이후 재부팅을 했지만, 연결은 안된다.
+
+=======================================================================
+라즈베리파이 무선랜 설정 2
+https://liec.tistory.com/21
+
+안됨
+
+=======================================================================
+라즈베리파이 기초강좌 : 라즈베리파이 무선랜(Wifi) 수동 설정법
+http://www.rasplay.org/?p=5996
+
+2. 라즈베리파이 hidden wifi 설정법
+
+sudo nano /etc/network/interfaces
+
+바꾸니까 와이파이 자체를 못잡는다.
+
+=======================================================================
+
+2015.7.2-3 두 개 이상의 와이파이 접속 설정 (특히 WEP과 WPA) 
+http://blog.naver.com/PostView.nhn?blogId=sigsaly&logNo=220409271175&parentCategoryNo=&categoryNo=118&viewDate=&isShowPopularPosts=true&from=search
+
+이걸 도전해본다. => 저거 안된다.
+
+--- /etc/network/interfaces 파일의 편집 : 
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+      wpa-ssid netbeez-enterprise-wireless
+      pre-up wpa_supplicant -B -Dwext -i wlan0 -c/etc/wpa_supplicant/wpa_suppli$
+      post-down killall -q wpa_supplicant
+
+=======================================================================
+
+참고 : Wireless connectivity
+https://www.raspberrypi.org/documentation/configuration/wireless/
+
+
+sudo su를 실행하여 루트로 변경 한 후 
+wpa_passphrase "nsg" >> /etc/wpa_supplicant/wpa_supplicant.conf
+를 호출하고 요청시 테스트 비밀번호를 입력하십시오.
+
+==> 이 문서도 참고해 보았지만 안되었다.
+
+=======================================================================
+
+---- wpa_supplicant.conf  공식 문서
+https://www.freebsd.org/cgi/man.cgi?query=wpa_supplicant.conf&sektion=5&apropos=0&manpath=NetBSD+6.1.5
+
+network={
+        ssid="nsg"
+        scan_ssid=1
+	priority=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        auth_alg=OPEN
+        pairwise=CCMP
+        group=TKIP
+        eap=MSCHAPV2
+        identity="dp2010142"
+        password="a123456!@"
+}
+=>> 이후 reboot를 해 보았지만 안된다.
+  와이파이 목록은 뜨는데, 연결이 안된다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

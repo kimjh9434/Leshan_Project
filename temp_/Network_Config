@@ -1,0 +1,213 @@
+라즈베리파이 WPA2-Enterprise 연결 고민...
+
+sudo raspi-config
+
+ifconfig wlan0
+
+iwconfig
+
+sudo iwlist wlan0 scan
+
+-- 네트워크 재연결 방법
+1. sudo service networking restart
+2. sudo ifconfig wlan0 down   /   sudo ifconfig wlan0 up 
+3. sudo reboot
+
+sudo nano /etc/network/interfaces
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+wpa_passphrase "nsg" 
+이후 비밀번호(a123456!@) 입력
+: nsg에 password의 암호화된 PSK를 생성 
+
+sudo su
+wpa_passphrase "nsg" >> /etc/wpa_supplicant/wpa_supplicant.conf
+이후 비밀번호 입력
+
+wpa_cli -i wlan0 reconfigure
+
+
+
+sudo wpa_supplicant -Dwext -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+
+
+// sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=GB
+
+
+network={
+        ssid="nsg"
+        scan_ssid=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        pairwise=CCMP
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+        phase1="peapver=0"
+        phase2="MSCHAPV2"
+}
+
+network={
+	ssid="nsg"
+	key_mgmt=WPA-EAP
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+}
+
+
+
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US
+
+network={
+        ssid="nsg"
+        scan_ssid=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        pairwise=CCMP
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+}
+
+network={
+        ssid="nsg"
+        scan_ssid=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        pairwise=CCMP
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+        phase1="peapver=0"
+        phase2="MSCHAPV2"
+}
+
+network={
+        ssid="nsg"
+        scan_ssid=1
+        priority=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        pairwise=CCMP
+        auth_alg=OPEN
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+        phase1="peaplabel=0"
+        phase2="auth=MSCHAPV2"
+}
+
+
+이후 reboot
+
+#key_mgmt=IEEE8021X
+#eap=MSCHAPV2
+
+참고 https://www.freebsd.org/cgi/man.cgi?query=wpa_supplicant.conf&sektion=5&apropos=0&manpath=NetBSD+6.1.5
+
+// 내가 직접 찾아보고 작성한 내용 - 안됨
+network={
+        ssid="nsg"
+        scan_ssid=1
+	priority=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        auth_alg=OPEN
+        pairwise=CCMP
+        group=TKIP
+        eap=MSCHAPV2
+        identity="dp2010142"
+        password="a123456!@"
+}
+
+network={
+        ssid="nsg"
+        scan_ssid=1
+	priority=1
+        proto=RSN
+        key_mgmt=WPA-EAP
+        auth_alg=OPEN
+        pairwise=CCMP
+        group=TKIP
+        eap=PEAP
+        identity="dp2010142"
+        password="a123456!@"
+}
+
+
+        phase1="peapver=0"
+        phase2="auth=MSCHAPV2"
+
+
+
+sudo nano /etc/network/interfaces
+
+////// 적어도 이건 오류가 없었다! - 다시 확인해도 이건 됨
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet loopback
+
+iface eth0 inet manual
+
+audo wlan0
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+
+-- 파일 내용 --- 이거 하니까 안된다.
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet l manual
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+        pre-up wpa_supplicant -B -Dwext -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+        post-down killall -q wpa_supplicantoopback
+
+iface eth0 inet manual
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+        pre-up wpa_supplicant -B -Dwext -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+        post-down killall -q wpa_supplicant
+
+
+// 이건 네트워크 자체를 못잡는 걸로 봐서 오류가 있다.
+source-directory /etc/network/interfaces.d
+
+auto lo
+
+iface lo inet loopback
+iface eth0 inet dhcp
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+wpa-scan-ssid 1
+wpa-ap-scan 1
+wpa-key-mgmt WPA-PSK
+
+
